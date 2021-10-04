@@ -18,8 +18,8 @@ public class ExpenseService {
     @Autowired
     private ExpenseRepository expenseRepository;
 
-    @Autowired
-    private RestTemplate restTemplate;
+//    @Autowired
+//    private RestTemplate restTemplate;
 
 
     public Expense saveExpense(Expense expense) {
@@ -35,11 +35,11 @@ public class ExpenseService {
         ResponseTemplateUserWithExpenses responseTemplateUserWithExpenses = new ResponseTemplateUserWithExpenses();
         List<Expense> expenseList = expenseRepository.findExpensesByUserId(userId);
 
-        User user =
-                restTemplate.getForObject("http://USER-SERVICE/users/" + userId,
-                        User.class);
+//        User user =
+//                restTemplate.getForObject("http://USER-SERVICE/users/" + userId,
+//                        User.class);
 
-        responseTemplateUserWithExpenses.setUser(user);
+//        responseTemplateUserWithExpenses.setUser(user);
         responseTemplateUserWithExpenses.setExpenseList(expenseList);
 
         return responseTemplateUserWithExpenses;
