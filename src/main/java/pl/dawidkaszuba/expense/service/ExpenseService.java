@@ -3,11 +3,11 @@ package pl.dawidkaszuba.expense.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import pl.dawidkaszuba.expense.entity.Expense;
 import pl.dawidkaszuba.expense.model.User;
 import pl.dawidkaszuba.expense.repository.ExpenseRepository;
 import pl.dawidkaszuba.expense.responseTemplate.ResponseTemplateUserWithExpenses;
+import pl.dawidkaszuba.expense.service.client.UserFeignClient;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ public class ExpenseService {
     @Autowired
     private ExpenseRepository expenseRepository;
 
-//    @Autowired
-//    private RestTemplate restTemplate;
+    @Autowired
+    UserFeignClient userFeignClient;
 
 
     public Expense saveExpense(Expense expense) {
@@ -35,11 +35,10 @@ public class ExpenseService {
         ResponseTemplateUserWithExpenses responseTemplateUserWithExpenses = new ResponseTemplateUserWithExpenses();
         List<Expense> expenseList = expenseRepository.findExpensesByUserId(userId);
 
-//        User user =
-//                restTemplate.getForObject("http://USER-SERVICE/users/" + userId,
-//                        User.class);
+        User user =
+                userFeignClient.getUserDetails(userId);
 
-//        responseTemplateUserWithExpenses.setUser(user);
+        responseTemplateUserWithExpenses.setUser(user);
         responseTemplateUserWithExpenses.setExpenseList(expenseList);
 
         return responseTemplateUserWithExpenses;
