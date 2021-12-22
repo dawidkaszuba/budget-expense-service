@@ -31,12 +31,12 @@ public class ExpenseService {
         return expenseRepository.findByExpenseId(expenseId);
     }
 
-    public ResponseTemplateUserWithExpenses findExpensesByUserId(Long userId) {
+    public ResponseTemplateUserWithExpenses findExpensesByUserId(Long userId, String correlationId) {
         ResponseTemplateUserWithExpenses responseTemplateUserWithExpenses = new ResponseTemplateUserWithExpenses();
         List<Expense> expenseList = expenseRepository.findExpensesByUserId(userId);
 
         User user =
-                userFeignClient.getUserDetails(userId);
+                userFeignClient.getUserDetails(userId, correlationId);
 
         responseTemplateUserWithExpenses.setUser(user);
         responseTemplateUserWithExpenses.setExpenseList(expenseList);

@@ -33,21 +33,21 @@ public class ExpenseController {
     }
 
     @GetMapping("/user/{id}")
-    @CircuitBreaker(name="userExpenses", fallbackMethod = "userExpensesFallBack")
-    public ResponseTemplateUserWithExpenses getUserExpenses(@PathVariable("id") Long id) {
-        return expenseService.findExpensesByUserId(id);
+    @CircuitBreaker(name="userExpenses")
+    public ResponseTemplateUserWithExpenses getUserExpenses(@RequestHeader("tracing-correlation-id") String correlationId,
+                                                            @PathVariable("id") Long id) {
+        return expenseService.findExpensesByUserId(id, correlationId);
     }
 
     @GetMapping("/properties")
-    public String getProperties() throws JsonProcessingException {
+    private String getProperties() throws JsonProcessingException {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         Properties properties = new Properties(expenseServiceConfig.getMsg(), expenseServiceConfig.getBuildVersion());
-        String jsonStr = ow.writeValueAsString(properties);
-        return jsonStr;
+        return ow.writeValueAsString(properties);
     }
 
-    private ResponseTemplateUserWithExpenses userExpensesFallBack(Long id, Throwable t) {
-       //just example, to refactor
-        return new ResponseTemplateUserWithExpenses();
-    }
+//    private ResponseTemplateUserWithExpenses userExpensesFallBack(Long id, Throwable t) {
+//       //just example, to refactor
+//        return new ResponseTemplateUserWithExpenses();
+//    }
 }
