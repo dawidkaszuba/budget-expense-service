@@ -16,11 +16,15 @@ import pl.dawidkaszuba.expense.service.ExpenseService;
 @RequestMapping("/expenses")
 public class ExpenseController {
 
-    @Autowired
-    private ExpenseService expenseService;
+
+    private final ExpenseService expenseService;
+    private final ExpenseServiceConfig expenseServiceConfig;
 
     @Autowired
-    private ExpenseServiceConfig expenseServiceConfig;
+    public ExpenseController(ExpenseService expenseService, ExpenseServiceConfig expenseServiceConfig) {
+        this.expenseService = expenseService;
+        this.expenseServiceConfig = expenseServiceConfig;
+    }
 
     @PostMapping("/")
     public Expense saveExpense(@RequestBody Expense expense) {
@@ -34,9 +38,8 @@ public class ExpenseController {
 
     @GetMapping("/user/{id}")
     @CircuitBreaker(name="userExpenses")
-    public ResponseTemplateUserWithExpenses getUserExpenses(@RequestHeader("tracing-correlation-id") String correlationId,
-                                                            @PathVariable("id") Long id) {
-        return expenseService.findExpensesByUserId(id, correlationId);
+    public ResponseTemplateUserWithExpenses getUserExpenses(@PathVariable("id") Long id) {
+        return expenseService.findExpensesByUserId(id);
     }
 
     @GetMapping("/properties")
@@ -46,8 +49,8 @@ public class ExpenseController {
         return ow.writeValueAsString(properties);
     }
 
-//    private ResponseTemplateUserWithExpenses userExpensesFallBack(Long id, Throwable t) {
-//       //just example, to refactor
-//        return new ResponseTemplateUserWithExpenses();
-//    }
+    private ResponseTemplateUserWithExpenses userExpensesFallBack(Long id, Throwable t) {
+       //just example, to refactor
+        return new ResponseTemplateUserWithExpenses();
+    }
 }

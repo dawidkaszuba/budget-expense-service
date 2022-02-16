@@ -10,5 +10,5 @@ import pl.dawidkaszuba.expense.model.User;
 @FeignClient("user-service")
 public interface UserFeignClient {
     @RequestMapping(method = RequestMethod.GET, value = "users/{userId}", consumes = "application/json ")
-    User getUserDetails(  @PathVariable("userId") Long userId, @RequestHeader("tracing-correlation-id") String correlationId);
+    User getUserDetails(  @PathVariable("userId") Long userId);
 }

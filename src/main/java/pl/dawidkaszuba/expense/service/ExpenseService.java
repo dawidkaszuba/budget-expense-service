@@ -31,15 +31,17 @@ public class ExpenseService {
         return expenseRepository.findByExpenseId(expenseId);
     }
 
-    public ResponseTemplateUserWithExpenses findExpensesByUserId(Long userId, String correlationId) {
+    public ResponseTemplateUserWithExpenses findExpensesByUserId(Long userId) {
         ResponseTemplateUserWithExpenses responseTemplateUserWithExpenses = new ResponseTemplateUserWithExpenses();
         List<Expense> expenseList = expenseRepository.findExpensesByUserId(userId);
 
         User user =
-                userFeignClient.getUserDetails(userId, correlationId);
+                userFeignClient.getUserDetails(userId);
 
         responseTemplateUserWithExpenses.setUser(user);
         responseTemplateUserWithExpenses.setExpenseList(expenseList);
+
+        log.info("Expenses by user have been sent.");
 
         return responseTemplateUserWithExpenses;
     }
